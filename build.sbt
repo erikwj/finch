@@ -253,6 +253,21 @@ lazy val examples = project
   )
   .dependsOn(core, circe, jackson, oauth2)
 
+lazy val tut = project
+  .settings(moduleName := "finch-docs")
+  .settings(allSettings)
+  .settings(tutSettings)
+  .settings(noPublish)
+  .settings(
+    libraryDependencies ++= Seq(
+      "io.circe" %% "circe-generic" % circeVersion,
+      "com.twitter" %% "twitter-server" % twitterServerVersion,
+      "com.twitter" %% "util-eval" % utilVersion,
+      "com.github.finagle" %% "finagle-oauth2" % finagleOAuth2Version
+    )
+  )
+  .dependsOn(core, circe, jackson, oauth2, sse)
+
 lazy val benchmarks = project
   .settings(moduleName := "finch-benchmarks")
   .enablePlugins(JmhPlugin)
