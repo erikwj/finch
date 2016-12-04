@@ -19,7 +19,7 @@ lazy val sprayVersion = "1.3.2"
 lazy val playVersion = "2.3.10"
 lazy val jacksonVersion = "2.8.5"
 
-lazy val compilerOptions = Seq(
+lazy val compilerOptions: Seq[String] = Seq(
   "-deprecation",
   "-encoding", "UTF-8",
   "-feature",
@@ -263,10 +263,11 @@ lazy val tut = project
       "io.circe" %% "circe-generic" % circeVersion,
       "com.twitter" %% "twitter-server" % twitterServerVersion,
       "com.twitter" %% "util-eval" % utilVersion,
-      "com.github.finagle" %% "finagle-oauth2" % finagleOAuth2Version
+      "com.github.finagle" %% "finagle-oauth2" % finagleOAuth2Version,
+      "joda-time" % "joda-time" % "2.9.6"
     )
   )
-  .dependsOn(core, circe, jackson, oauth2, sse)
+  .dependsOn(core, circe, jackson, oauth2, sse, argonaut)
 
 lazy val benchmarks = project
   .settings(moduleName := "finch-benchmarks")

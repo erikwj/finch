@@ -47,12 +47,17 @@ class patchers are usually represented as `Endpoint[A => A]`, which
 2. represents that partial JSON object as a function `A => A` that takes a case class and updates
    it with all the values from a JSON object
 
-```scala
+```tut:silent
+import java.util.UUID
 import io.finch._
 import io.finch.circe._
 import io.circe.generic.auto._
 
+
 case class Todo(id: UUID, title: String, completed: Boolean, order: Int)
+object Todo {
+  def list():List[Todo] = ???
+}
 val patchedTodo: Endpoint[Todo => Todo] = body.as[Todo => Todo]
 val patchTodo: Endpoint[Todo] = patch("todos" :: uuid :: patchedTodo) { (id: UUID, pt: Todo => Todo) =>
   val oldTodo = ??? // get by id
@@ -71,7 +76,7 @@ final type (a complete JSON object), gives us a function, to which we'd need to 
 bits to get the final instance.
 
 
-```scala
+```tut:silent
 import io.finch._
 import io.finch.circe._
 import io.circe.generic.auto._
@@ -97,18 +102,20 @@ Finagle is very sensitive to whether or not its worker threads are blocked. In o
 your HTTP server always makes progress (accepts new connections/requests), do not block Finch
 endpoints. Use `FuturePool`s to wrap expensive computations.
 
-```scala
+```tut
 import io.finch._
 import com.twitter.util.FuturePool
 
 val expensive: Endpoint[BigInt] = get(int) { i: Int =>
   FuturePool.unboundedPool {
-    BigInt(i).pow(i)
+    Ok(BigInt(i).pow(i))
   }
+}.handle {
+  case e: Error.NotPresent => BadRequest(e)
 }
 ```
 
-Refer to this [blog post][block-party] to find out how much time a Finagle service spend blocking.
+Refer to this [blog post][block-party] to find out how much time a Finagle service spent blocking.
 
 ### Use TwitterServer
 
@@ -121,7 +128,7 @@ memory, CPU usage, request success rate, request latency and many more) exported
 
 Use the following template to empower your Finch application with TwitterServer.
 
-```scala
+```tut:silent
 import io.finch._
 
 import com.twitter.finagle.param.Stats
@@ -155,7 +162,7 @@ better understand your application under different circumstances.
 One of the easiest things to export is a _counter_ that captures the number of times some event
 occurred.
 
-```scala
+```tut:silent
 import io.finch._
 import io.finch.circe._
 import io.circe.generic.auto._
@@ -176,7 +183,7 @@ object Main extends TwitterServer {
 It's also possible to export histograms over random values (latencies, number of active users,
 etc).
 
-```scala
+```tut:silent
 import io.finch._
 import io.finch.circe._
 import io.circe.generic.auto._
@@ -229,15 +236,29 @@ useful server-side features that might be useful for most of the use cases.
  might think of overriding a [concurrency limit][finagle-concurrency] (a maximum number of
  concurrent requests allowed) on it (disabled by default).
 
- ```scala
+ ```tut:silent
+ 
  import com.twitter.finagle.Http
-
- val server = Http.server
-   .withAdmissionControl.concurrencyLimit(
-     maxConcurrentRequests = 10,
-     maxWaiters = 10,
-   )
-   .serve(":8080", service)
+ import com.twitter.finagle.http.{Request, Response}
+ 
+ object Main extends TwitterServer {
+ 
+   val api: Service[Request, Response] = ???
+ 
+   def main(): Unit = {
+    val server = Http.server.withAdmissionControl
+      .concurrencyLimit(
+        maxConcurrentRequests = 10, 
+        maxWaiters = 10)
+      .serve(":8080", api)
+ 
+ 
+     onExit { server.close() }
+ 
+     Await.ready(adminHttpServer)
+   }
+ }
+ 
  ```
 
 ### Finagle Filters vs. Finch Endpoints
