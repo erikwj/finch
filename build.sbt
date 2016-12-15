@@ -267,7 +267,7 @@ lazy val tut = project
       "joda-time" % "joda-time" % "2.9.6"
     )
   )
-  .dependsOn(core, circe, jackson, oauth2, sse, argonaut)
+  .dependsOn(core, circe, jackson, oauth2, sse, argonaut,json4s, playjson)
 
 lazy val benchmarks = project
   .settings(moduleName := "finch-benchmarks")

@@ -12,8 +12,9 @@ supported in Finch via the `finch-oauth2` package:
 
 *Authorize*
 ```scala
-import com.twitter.finagle.oauth2._
+import io.finch._
 import io.finch.oauth2._
+import com.twitter.finagle.oauth2._
 
 val dataHandler: DataHandler[Int] = ???
 val auth: Endpoint[AuthInfo[Int]] = authorize(dataHandler)

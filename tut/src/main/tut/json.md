@@ -27,7 +27,7 @@ Use the following instructions to enable support for a particular JSON library.
   `io.circe.Decoder[A]` in the scope or that Circe's generic auto derivation is used via
   `import io.circe.generic.auto_`.
 
-```scala
+```tut:silent
 import io.finch.circe._
 import io.circe.generic.auto._
 ```
@@ -35,7 +35,7 @@ import io.circe.generic.auto._
 It's also possible to import the Circe configuration which uses a pretty printer configured with
 `dropNullKeys = true`. Use the following imports instead:
 
-```scala
+```tut:silent
 import io.finch.circe.dropNullKeys._
 import io.circe.generic.auto._
 ```
@@ -44,7 +44,7 @@ Unless it's absolutely necessary to customize Circe's output format (i.e., drop 
 prefer the [Jackson serializer][circe-jackson] for better performance. The following two imports
 show how to make Circe use Jackson while serializing instead of the built-in pretty printer.
 
-```scala
+```tus:silent
 import io.finch.circe.jacksonSerializer._
 import io.circe.generic.auto._
 ```
@@ -80,7 +80,7 @@ there are three additional configurations available out of the box:
 * Make sure there is an implicit instance of `com.fasterxml.jackson.databind.ObjectMapper` in the
   scope.
 
-```scala
+```tut:silent
 import io.finch.jackson._
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
@@ -106,7 +106,7 @@ implicit val formats: Formats = DefaultFormats ++ JodaTimeSerializers.all
 * For any type you want to serialize or deserialize you are required to create the appropriate
   Play JSON `Reads` and `Writes`.
 
-```scala
+```tut:silent
 import io.finch.playjson._
 import play.api.libs.json._
 
