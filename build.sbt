@@ -263,8 +263,8 @@ lazy val tut = project
       "io.circe" %% "circe-generic" % circeVersion,
       "com.twitter" %% "twitter-server" % twitterServerVersion,
       "com.twitter" %% "util-eval" % utilVersion,
-      "com.github.finagle" %% "finagle-oauth2" % finagleOAuth2Version,
-      "joda-time" % "joda-time" % "2.9.6"
+      "joda-time" % "joda-time" % "2.9.6",
+      "org.mockito" % "mockito-all" % "1.10.19"
     )
   )
   .dependsOn(core, circe, jackson, oauth2, sse, argonaut,json4s, playjson)

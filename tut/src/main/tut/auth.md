@@ -11,20 +11,57 @@ There is [finagle-oauth2](https://github.com/finagle/finagle-oauth2) server-side
 supported in Finch via the `finch-oauth2` package:
 
 *Authorize*
-```scala
+```tut:silent
 import io.finch._
 import io.finch.oauth2._
 import com.twitter.finagle.oauth2._
+import com.twitter.util.Future
+import java.util.Date
 
-val dataHandler: DataHandler[Int] = ???
+class MockDataHandler extends DataHandler[Int] {
+
+  def validateClient(clientId: String, clientSecret: String, grantType: String) =
+    Future.value(false)
+
+  def findUser(username: String, password: String): Future[Option[Int]] =
+    Future.value(None)
+
+  def createAccessToken(authInfo: AuthInfo[Int]) =
+    Future.value(AccessToken("", Some(""), Some(""), Some(0L), new Date()))
+
+  def findAuthInfoByCode(code: String): Future[Option[AuthInfo[Int]]] =
+    Future.value(None)
+
+  def findAuthInfoByRefreshToken(refreshToken: String): Future[Option[AuthInfo[Int]]] =
+    Future.value(None)
+
+  def findClientUser(clientId: String, clientSecret: String, scope: Option[String]): Future[Option[Int]] =
+    Future.value(None)
+
+  def findAccessToken(token: String): Future[Option[AccessToken]] =
+    Future.value(None)
+
+  def findAuthInfoByAccessToken(accessToken: AccessToken): Future[Option[AuthInfo[Int]]] =
+    Future.value(None)
+  
+  def getStoredAccessToken(authInfo: AuthInfo[Int]): Future[Option[AccessToken]] =
+    Future.value(None)
+
+  def refreshAccessToken(authInfo: AuthInfo[Int], refreshToken: String): Future[AccessToken] =
+    Future.value(AccessToken("", Some(""), Some(""), Some(0L), new Date()))
+}
+
+val dataHandler: DataHandler[Int] = new MockDataHandler()
 val auth: Endpoint[AuthInfo[Int]] = authorize(dataHandler)
 val e: Endpoint[Int] = get("user" :: auth) { ai: AuthInfo[Int] => Ok(ai.user) }
 ```
 
 *Issue Access Token*
 ```scala
-import com.twitter.finagle.oauth2._
+import io.finch._
 import io.finch.oauth2._
+import com.twitter.finagle.oauth2._
+import org.mockito.Mockito._
 
 val token: Endpoint[GrandHandlerResult] = issueAccessToken(dataHandler)
 ```
@@ -38,13 +75,13 @@ include its serialization logic into an instance of `EncodeResponse[Exception]`.
 [Basic HTTP Auth](http://en.wikipedia.org/wiki/Basic_access_authentication) is implemented as the
 `BasicAuth` combinator available in `finch-core`.
 
-```scala
+```tut:silent
 import io.finch._
 
 val basicAuth: BasicAuth = BasicAuth("realm") { (user, password) =>
-  user == "user" && password == "password"
+  Future { user == "user" && password == "password" }
 }
-val e: Endpoint[String] = basicAuth(Endpoint(Ok("secret place")))
+val e: Endpoint[String] = basicAuth(Endpoint.liftOutput(Ok("secret place")))
 ```
 
 --
