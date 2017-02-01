@@ -58,7 +58,7 @@ case class Todo(id: UUID, title: String, completed: Boolean, order: Int)
 object Todo {
   def list():List[Todo] = ???
 }
-val patchedTodo: Endpoint[Todo => Todo] = body.as[Todo => Todo]
+val patchedTodo: Endpoint[Todo => Todo] = jsonBody[Todo => Todo]
 val patchTodo: Endpoint[Todo] = patch("todos" :: uuid :: patchedTodo) { (id: UUID, pt: Todo => Todo) =>
   val oldTodo = ??? // get by id
   val newTodo = pt(oldTodo)
@@ -81,7 +81,7 @@ import io.finch._
 import io.finch.circe._
 import io.circe.generic.auto._
 
-val postedTodo: Endpoint[Todo] = body.as[UUID => Todo].map(_(UUID.randomUUID()))
+val postedTodo: Endpoint[Todo] = jsonBody[UUID => Todo].map(_(UUID.randomUUID()))
 val postTodo: Endpoint[Todo] = post("todos" :: postedTodo) { t: Todo =>
   // store t in the DB
   Ok(t)
