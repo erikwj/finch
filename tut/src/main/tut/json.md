@@ -109,12 +109,13 @@ implicit val formats: Formats = DefaultFormats ++ JodaTimeSerializers.all
 ```tut:silent
 import io.finch.playjson._
 import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 case class Foo(name: String,age: Int)
 
 object Foo {
-  implicit val fooReads: Reads[Foo] = Json.reads[Foo]
-  implicit val fooWrites: Writes[Foo] = Json.writes[Foo]
+  implicit val fooReads: Reads[Foo] = ???
+  implicit val fooWrites: Writes[Foo] = ???
 }
 ```
 
