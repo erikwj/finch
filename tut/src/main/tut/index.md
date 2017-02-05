@@ -41,7 +41,7 @@ object Main extends App {
     java.util.Calendar.getInstance(l).getTime.toString
 
   val time: Endpoint[Time] =
-    post("time" :: body.as[Locale]) { l: Locale =>
+    post("time" :: jsonBody[Locale]) { l: Locale =>
       Ok(Time(l, currentTime(new java.util.Locale(l.language, l.country))))
     }
 

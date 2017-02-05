@@ -3,7 +3,7 @@
 * [Fixing the `.toService` compile error](cookbook.md#fixing-the-toservice-compile-error)
 * [Serving multiple content types](cookbook.md#serving-multiple-content-types)
 * [Serving static content](cookbook.md#serving-static-content)
-* [Converting `Error.RequestErrors` into JSON](cookbook.md#converting-errorrequesterrors-into-json)
+* [Converting `Error.Multiple` into JSON](cookbook.md#converting-errormultiple-into-json)
 * [Defining endpoints returning empty responses](cookbook.md#defining-endpoints-returning-empty-responses)
 * [Defining redirecting endpoints](cookbook.md#defining-redirecting-endpoints)
 * [Defining custom endpoints](cookbook.md#defining-custom-endpoints)
@@ -343,14 +343,13 @@ The `getCurrentUser` endpoint doesn't need to change at all, since `auth` is sti
 Let's say you want to write a custom _matching_ endpoint that only matches requests whose current
 path segment might be extracted as (converted to) Java 8's `LocalDateTime`.
 
-```scala
+```tut:silent
 import io.finch._
-import io.finch.internal
 import com.twitter.util.Try
 import java.time.LocalDateTime
 
-implicit val e: internal.Extractor[LocalDateTime] =
-  internal.Extractor.instance(s => Try(LocalDateTime.parse(s)).toOption)
+implicit val e: DecodePath[LocalDateTime] =
+  DecodePath.instance(s => Try(LocalDateTime.parse(s)).toOption)
 
 val dateTime: Endpoint[LocalDateTime] = get("time" :: path[LocalDateTime]) { t: LocalDateTime =>
   println(s"Got time: $t")
@@ -358,7 +357,7 @@ val dateTime: Endpoint[LocalDateTime] = get("time" :: path[LocalDateTime]) { t: 
 }
 ```
 
-**Note:** `io.finch.internal.Extractor` is an experimental API that will be (or not) eventually
+**Note:** `io.finch.DecodePath` is an experimental API that will be (or not) eventually
 promoted to non-experimental.
 
 
@@ -468,7 +467,7 @@ filter `JsonpFilter` that can be applied to an HTTP service returning JSON to "u
 
 Here is a small example on how to wire this filter with Finch's endpoint.
 
-```scala
+```tut:silent
 import com.twitter.finagle.Http
 import com.twitter.finagle.http.filter.JsonpFilter
 import io.finch._
