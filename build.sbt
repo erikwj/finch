@@ -1,4 +1,6 @@
 import sbtunidoc.Plugin.UnidocKeys._
+import microsites.ExtraMdFileConfig
+import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 
 lazy val buildSettings = Seq(
   organization := "com.github.finagle",
@@ -105,11 +107,51 @@ lazy val noPublish = Seq(
 
 lazy val allSettings = baseSettings ++ buildSettings ++ publishSettings
 
-lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
-  site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "docs"),
-  git.remoteRepo := s"git@github.com:finagle/finch.git",
-  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmarks, jsonTest)
+//lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
+//  site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "docs"),
+//  git.remoteRepo := s"git@github.com:finagle/finch.git",
+//  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmarks, jsonTest)
+//)
+//
+
+lazy val docSettings = allSettings ++ ghpages.settings ++ unidocSettings ++ Seq(
+  micrositeName := "finch",
+  micrositeDescription := "Scala combinator library for building Finagle HTTP services",
+  micrositeAuthor := "Vladimir Kostyukov",
+  micrositeHighlightTheme := "atom-one-light",
+  micrositeHomepage := "https://erikwj.github.io/finch/",
+  micrositeBaseUrl := "finch",
+  micrositeDocumentationUrl := "api",
+  micrositeGithubOwner := "finagle/finch",
+  micrositeGithubRepo := "finagle/finch",
+  micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
+  micrositePalette := Map(
+    "brand-primary" -> "#5B5988",
+    "brand-secondary" -> "#292E53",
+    "brand-tertiary" -> "#222749",
+    "gray-dark" -> "#49494B",
+    "gray" -> "#7B7B7E",
+    "gray-light" -> "#E5E5E6",
+    "gray-lighter" -> "#F4F3F4",
+    "white-color" -> "#FFFFFF"),
+  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
+  ghpagesNoJekyll := false,
+  scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
+    "-groups",
+    "-implicits",
+    "-skip-packages", "scalaz",
+    "-doc-source-url", scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
+    "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath,
+    "-doc-root-content", (resourceDirectory.in(Compile).value / "rootdoc.txt").getAbsolutePath
+  ),
+  scalacOptions ~= {
+    _.filterNot(Set("-Yno-predef"))
+  },
+  git.remoteRepo := "git@github.com:erikwj/erikwj.git",
+  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject,
+  includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
 )
+
 
 lazy val finch = project.in(file("."))
   .settings(moduleName := "finch")
@@ -234,6 +276,24 @@ lazy val sse = project
   .settings(allSettings)
   .dependsOn(core)
 
+lazy val docs = project
+  .settings(moduleName := "finch-docs")
+  .settings(docSettings)
+  .settings(noPublish)
+  .settings(
+    libraryDependencies ++= Seq(
+      "io.circe" %% "circe-generic" % circeVersion,
+      "com.github.finagle" %% "finagle-oauth2" % finagleOAuth2Version,
+      "com.twitter" %% "twitter-server" % twitterServerVersion,
+      "com.twitter" %% "util-eval" % utilVersion,
+      "joda-time" % "joda-time" % "2.9.6",
+      "org.mockito" % "mockito-all" % "1.10.19"
+    )
+  )
+  .enablePlugins(MicrositesPlugin)
+  .dependsOn(core, circe, jackson, oauth2, sse, argonaut,json4s, playjson)
+
+
 lazy val examples = project
   .settings(moduleName := "finch-examples")
   .settings(allSettings)
@@ -300,3 +360,4 @@ val validateCommands = List(
   "coverageAggregate"
 )
 addCommandAlias("validate", validateCommands.mkString(";", ";", ""))
+

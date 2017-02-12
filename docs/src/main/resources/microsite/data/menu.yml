@@ -1,0 +1,17 @@
+options:
+
+  - title: Home
+    url: index.html
+
+  - title: User Guide
+    url: user-guide.html
+
+  - title: Cookbook
+    url: cookbook.html
+
+  - title: Best Practices
+    url: best-practices.html
+
+  - title: Guide for contributors
+    url: contributing.html
+
