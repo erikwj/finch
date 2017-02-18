@@ -5,27 +5,27 @@ layout: docs
 
 ## Cookbook
 
-* [JSON](cookbook.md#json)
- * [Circe](cookbook.md#circe)
- * [Argonaut](cookbook.md#argonaut)
- * [Jackson](cookbook.md#jackson)
- * [Json4s](cookbook.md#json4s)
- * [PlayJson](cookbook.md#playjson)
-* [Fixing the `.toService` compile error](cookbook.md#fixing-the-toservice-compile-error)
-* [Serving multiple content types](cookbook.md#serving-multiple-content-types)
-* [Serving static content](cookbook.md#serving-static-content)
-* [Converting `Error.Multiple` into JSON](cookbook.md#converting-errormultiple-into-json)
-* [Defining endpoints returning empty responses](cookbook.md#defining-endpoints-returning-empty-responses)
-* [Defining redirecting endpoints](cookbook.md#defining-redirecting-endpoints)
-* [Defining custom endpoints](cookbook.md#defining-custom-endpoints)
-* [CORS in Finch](cookbook.md#cors-in-finch)
-* [Converting between Scala futures and Twitter futures](cookbook.md#converting-between-scala-futures-and-twitter-futures)
-* [Server Sent Events](cookbook.md#server-sent-events)
-* [JSONP](cookbook.md#jsonp)
-* [OAuth2](cookbook.md#oauth2)
-* [Basic HTTP Auth](cookbook.md#basic-http-auth)
-
 This is a collection of short recipes of "How to X in Finch".
+
+* [JSON](#json)
+ * [Circe](#circe)
+ * [Argonaut](#argonaut)
+ * [Jackson](#jackson)
+ * [Json4s](#json4s)
+ * [PlayJson](#playjson)
+* [Fixing the `.toService` compile error](#fixing-the-toservice-compile-error)
+* [Serving multiple content types](#serving-multiple-content-types)
+* [Serving static content](#serving-static-content)
+* [Converting `Error.Multiple` into JSON](#converting-errormultiple-into-json)
+* [Defining endpoints returning empty responses](#defining-endpoints-returning-empty-responses)
+* [Defining redirecting endpoints](#defining-redirecting-endpoints)
+* [Defining custom endpoints](#defining-custom-endpoints)
+* [CORS in Finch](#cors-in-finch)
+* [Converting between Scala futures and Twitter futures](#converting-between-scala-futures-and-twitter-futures)
+* [Server Sent Events](#server-sent-events)
+* [JSONP](#jsonp)
+* [OAuth2](#oauth2)
+* [Basic HTTP Auth](#basic-http-auth)
 
 ### JSON
 
@@ -738,8 +738,6 @@ val basicAuth = BasicAuth("realm") { (user, password) =>
 val e: Endpoint[String] = basicAuth(Endpoint.liftOutput(Ok("secret place")))
 ```
 
---
-Read Next: [Best Practices](best-practices.md)
 
 [nginx]: http://nginx.org/en/
 [circe]: https://github.com/circe/circe

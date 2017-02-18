@@ -5,17 +5,16 @@ layout: docs
 
 ## Best Practices
 
-* [The big picture](best-practices.md#the-big-picture)
-* [Picking a JSON library](best-practices.md#picking-a-json-library)
-* [Do not block an endpoint](best-practices.md#do-not-block-an-endpoint)
-* [Use TwitterServer](best-practices.md#use-twitterserver)
-* [Monitor your application](best-practices.md#monitor-your-application)
-* [Picking HTTP statuses for responses](best-practices.md#picking-http-statuses-for-responses)
-* [Configuring Finagle](best-practices.md#configuring-finagle)
-* [Finagle Filters vs. Finch Endpoints](best-practices.md#finagle-filters-vs-finch-endpoints)
-* [Pulling it all Together](best-practices.md#pulling-it-all-together)
+* [The big picture](#the-big-picture)
+* [Picking a JSON library](#picking-a-json-library)
+* [Do not block an endpoint](#do-not-block-an-endpoint)
+* [Use TwitterServer](#use-twitterserver)
+* [Monitor your application](#monitor-your-application)
+* [Picking HTTP statuses for responses](#picking-http-statuses-for-responses)
+* [Configuring Finagle](#configuring-finagle)
+* [Finagle Filters vs. Finch Endpoints](#finagle-filters-vs-finch-endpoints)
+* [Pulling it all Together](#pulling-it-all-together)
 
---
 
 ### The big picture
 

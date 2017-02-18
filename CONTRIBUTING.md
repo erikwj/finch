@@ -1,3 +1,5 @@
+## Contributing
+
 Generally, Finch follows a standard [fork and pull][0] model for contributions via GitHub pull requests. Thus, the
 _contributing process_ looks as follows:
 
@@ -7,13 +9,13 @@ _contributing process_ looks as follows:
 3. [Write docs](#write-docs)
 4. [Submit a PR](#submit-a-pr)
 
-## Pick an issue
+### Pick an issue
 
 * On [Waffle][5], pick any issue from column "Ready"
 * On Github, leave a comment on the issue you picked to notify others that the issues is taken
 * On [Gitter][6] or Github, ask any question you may have while working on the issue
 
-## Write Code
+### Write Code
 Finch follows the [Effective Scala][1] code style guide. When in doubt, look around the codebase and see how it's done
 elsewhere.
 
@@ -24,7 +26,7 @@ elsewhere.
 
 That said, the Scala style checker `sbt scalastyle` should pass on the code.
 
-## Write Tests
+### Write Tests
 Finch uses both [ScalaTest][2] and [ScalaCheck][3] with the following settings:
 
 * Every test should be a `FlatSpec` with `Matchers` and `Checkers` mixed in
@@ -32,10 +34,10 @@ Finch uses both [ScalaTest][2] and [ScalaCheck][3] with the following settings:
 * An assertion in properties (inside `check`) should be written with `===`
 * Exceptions should be intercepted with `an [Exception] shouldBe thrownBy(x)`
 
-## Write Docs
+### Write Docs
 Write clean and simple docs in the `docs` folder.
 
-## Submit a PR
+### Submit a PR
 * PR should be submitted from a separate branch (use `git checkout -b "fix-123"`)
 * PR should generally contain only one commit (use `git commit --amend` and `git --force push` or [squash][4] existing commits into one)
 * PR should not decrease the code coverage more than by 1%

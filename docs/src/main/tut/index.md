@@ -1,10 +1,9 @@
 ---
-layout: docs
-
+layout: home
+title:  "Home"
+section: "home"
 ---
-<p align="center">
-  <img src="https://raw.githubusercontent.com/finagle/finch/master/finch-logo.png" width="360px" />
-</p>
+
 
 Finch provides a combinator API over the [Finagle][finagle] HTTP services. An `Endpoint[A]`, main
 abstraction for which combinators are defined, represents an HTTP endpoint that takes a request and
@@ -83,11 +82,6 @@ object Main extends App {
 * [On the history of Finch][sfscala-vk] by [@vkostyukov][vkostyukov] in Apr 2015
 * [Some possible features for Finch][sfscala-tb] [@travisbrown][travisbrown] in Apr 2015
 
-# Documentation
-
-* [User Guide](user-guide.md)
-* [Cookbook](cookbook.md)
-* [Best Practices](best-practices.md)
 
 [finagle]: http://twitter.github.io/finagle/
 [circe]: https://github.com/travisbrown/circe

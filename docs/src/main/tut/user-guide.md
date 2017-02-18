@@ -2,30 +2,28 @@
 layout: docs
 
 ---
-## Finch User Guide
+## User Guide
+* [Overview](#overview)
+* [Understanding Endpoints](#understanding-endpoints)
+* [Endpoint Instances](#endpoint-instances)
+* [Composing Endpoints](#composing-endpoints)
+  * [Product Endpoints](#product-endpoints)
+  * [Coproduct Endpoints](#coproduct-endpoints)
+* [Mapping Endpoints](#mapping-endpoints)
+* [Outputs](#outputs)
+* [Type-level Content-Type](#type-level-content-type)
+* [Decoding](#decoding)
+  * [Type Conversion](#type-conversion)
+  * [Custom Decoders](#custom-decoders)
+  * [Decoding from JSON](#decoding-from-json)
+* [Encoding](#encoding)
+  * [Encoding to JSON](#encoding-to-json)
+* [Validation](#validation)
+* [Errors](#errors)
+  * [Error Accumulation](#error-accumulation)
+  * [Error Handling](#error-handling)
+* [Testing](#testing)
 
-* [Overview](user-guide.md#overview)
-* [Understanding Endpoints](user-guide.md#understanding-endpoints)
-* [Endpoint Instances](user-guide.md#endpoint-instances)
-* [Composing Endpoints](user-guide.md#composing-endpoints)
-  * [Product Endpoints](user-guide.md#product-endpoints)
-  * [Coproduct Endpoints](user-guide.md#coproduct-endpoints)
-* [Mapping Endpoints](user-guide.md#mapping-endpoints)
-* [Outputs](user-guide.md#outputs)
-* [Type-level Content-Type](user-guide.md#type-level-content-type)
-* [Decoding](user-guide.md#decoding)
-  * [Type Conversion](user-guide.md#type-conversion)
-  * [Custom Decoders](user-guide.md#custom-decoders)
-  * [Decoding from JSON](user-guide.md#decoding-from-json)
-* [Encoding](user-guide.md#encoding)
-  * [Encoding to JSON](user-guide.md#encoding-to-json)
-* [Validation](user-guide.md#validation)
-* [Errors](user-guide.md#errors)
-  * [Error Accumulation](user-guide.md#error-accumulation)
-  * [Error Handling](user-guide.md#error-handling)
-* [Testing](user-guide.md#testing)
-
---
 
 ### Overview
 
@@ -738,8 +736,6 @@ divOrFail(Input.post("/20/0")).awaitOutputUnsafe().map(_.status) == Some(Status.
 
 You can find unit tests for the examples in the [examples folder][examples].
 
---
-Read Next: [Cookbook](cookbook.md)
 
 [shapeless]: https://github.com/milessabin/shapeless
 [hlist]: https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#heterogenous-lists

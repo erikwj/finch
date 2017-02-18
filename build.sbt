@@ -107,13 +107,6 @@ lazy val noPublish = Seq(
 
 lazy val allSettings = baseSettings ++ buildSettings ++ publishSettings
 
-//lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
-//  site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "docs"),
-//  git.remoteRepo := s"git@github.com:finagle/finch.git",
-//  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmarks, jsonTest)
-//)
-//
-
 lazy val docSettings = allSettings ++ ghpages.settings ++ unidocSettings ++ Seq(
   micrositeName := "finch",
   micrositeDescription := "Scala combinator library for building Finagle HTTP services",
@@ -122,11 +115,12 @@ lazy val docSettings = allSettings ++ ghpages.settings ++ unidocSettings ++ Seq(
   micrositeHomepage := "https://erikwj.github.io/finch/",
   micrositeBaseUrl := "finch",
   micrositeDocumentationUrl := "api",
-  micrositeGithubOwner := "finagle/finch",
-  micrositeGithubRepo := "finagle/finch",
+  micrositeGithubOwner := "finagle",
+  micrositeGithubRepo := "finch",
   micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
+  micrositeName := "Finch",
   micrositePalette := Map(
-    "brand-primary" -> "#5B5988",
+    "brand-primary" -> "#3b3c3b",
     "brand-secondary" -> "#292E53",
     "brand-tertiary" -> "#222749",
     "gray-dark" -> "#49494B",
