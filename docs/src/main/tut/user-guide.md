@@ -1,6 +1,7 @@
 ---
 layout: docs
-
+title: User Guide
+position: 1
 ---
 ## User Guide
 * [Overview](#overview)

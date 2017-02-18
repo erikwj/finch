@@ -1,6 +1,7 @@
 ---
 layout: docs
-
+title: Best-Practices
+position: 3
 ---
 
 ## Best Practices

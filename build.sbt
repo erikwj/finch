@@ -121,8 +121,8 @@ lazy val docSettings = allSettings ++ ghpages.settings ++ unidocSettings ++ Seq(
   micrositeName := "Finch",
   micrositePalette := Map(
     "brand-primary" -> "#3b3c3b",
-    "brand-secondary" -> "#292E53",
-    "brand-tertiary" -> "#222749",
+    "brand-secondary" -> "#3b3c3b",
+    "brand-tertiary" -> "#3b3c3b",
     "gray-dark" -> "#49494B",
     "gray" -> "#7B7B7E",
     "gray-light" -> "#E5E5E6",
