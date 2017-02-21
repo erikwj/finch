@@ -4,18 +4,18 @@ import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 
 lazy val buildSettings = Seq(
   organization := "com.github.finagle",
-  version := "0.13.0-SNAPSHOT",
+  version := "0.14.0-SNAPSHOT",
   scalaVersion := "2.12.1",
   crossScalaVersions := Seq("2.11.8", "2.12.1")
 )
 
-lazy val finagleVersion = "6.41.0"
-lazy val utilVersion = "6.40.0"
-lazy val twitterServerVersion = "1.26.0"
-lazy val finagleOAuth2Version = "0.3.0"
+lazy val finagleVersion = "6.42.0"
+lazy val utilVersion = "6.41.0"
+lazy val twitterServerVersion = "1.27.0"
+lazy val finagleOAuth2Version = "0.4.0"
 lazy val circeVersion = "0.7.0"
 lazy val circeJacksonVersion = "0.7.0"
-lazy val catbirdVersion = "0.11.0"
+lazy val catbirdVersion = "0.12.0"
 lazy val shapelessVersion = "2.3.2"
 lazy val catsVersion = "0.9.0"
 lazy val sprayVersion = "1.3.3"
@@ -144,11 +144,21 @@ lazy val docSettings = allSettings ++ ghpages.settings ++ unidocSettings ++ Seq(
   git.remoteRepo := "git@github.com:erikwj/erikwj.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject,
   includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
+
+//    siteSubdirName in ScalaUnidoc := "docs"
+
+//lazy val docSettings =  Seq(
+//  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc),
+//  git.remoteRepo := s"git@github.com:finagle/finch.git",
+//  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmarks, jsonTest)
+
 )
 
 
 lazy val finch = project.in(file("."))
   .settings(moduleName := "finch")
+  .enablePlugins(GhpagesPlugin)
+  .enablePlugins(ScalaUnidocPlugin)
   .settings(allSettings)
   .settings(docSettings)
   .settings(noPublish)

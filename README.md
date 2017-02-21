@@ -36,7 +36,7 @@ Every Finch module is published at Maven Central. Use the following _sbt_ snippe
 
 ```scala
 libraryDependencies ++= Seq(
-  "com.github.finagle" %% "[finch-module]" % "0.12.0"
+  "com.github.finagle" %% "[finch-module]" % "0.13.0"
 )
 ```
 
@@ -46,13 +46,13 @@ libraryDependencies ++= Seq(
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies ++= Seq(
-  "com.github.finagle" %% "[finch-module]" % "0.13.0-SNAPSHOT" changing()
+  "com.github.finagle" %% "[finch-module]" % "0.14.0-SNAPSHOT" changing()
 )
 ```
 
 Hello World!
 ------------
-This "Hello World!" example is built with the `0.12.0` version of just `finch-core`.
+This "Hello World!" example is built with the `0.13.0` version of just `finch-core`.
 
 ```scala
 import io.finch._
@@ -134,12 +134,12 @@ limitations under the License.
 
 [gitter]: https://gitter.im/finagle/finch
 [finagle]: https://github.com/twitter/finagle
-[circe]: https://github.com/travisbrown/circe
+[circe]: https://github.com/circe/circe
 [jackson]: http://wiki.fasterxml.com/JacksonHome
 [argonaut]: http://argonaut.io
 [finagle-oauth2]: https://github.com/finagle/finagle-oauth2
 [json4s]: http://json4s.org
-[playjson]: https://www.playframework.com/documentation/2.4.x/ScalaJson
+[playjson]: https://www.playframework.com/documentation/2.6.x/ScalaJson
 [sprayjson]: https://github.com/spray/spray-json
 [scaladoc]: http://finagle.github.io/finch/docs/#io.finch.package
 [typelevel]: http://typelevel.org/
