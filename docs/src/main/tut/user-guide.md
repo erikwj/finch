@@ -19,6 +19,12 @@ position: 1
   * [Decoding from JSON](#decoding-from-json)
 * [Encoding](#encoding)
   * [Encoding to JSON](#encoding-to-json)
+* [JSON](#json)
+  * [Circe](#circe)
+  * [Argonaut](#argonaut)
+  * [Jackson](#jackson)
+  * [Json4s](#json4s)
+  * [PlayJson](#playjson)
 * [Validation](#validation)
 * [Errors](#errors)
   * [Error Accumulation](#error-accumulation)
@@ -62,7 +68,7 @@ Everything from above is happening automatically when endpoint is served as a Fi
 a user you should neither deal with `Input` nor `EndpointResult` directly. Although, these types come
 in handy when it testing endpoints: it's quite easy to run an endpoint with an arbitrary `Input` and
 then query its `EndpointResult` to assert the output. This testing business is covered in depth in
-the [Testing](user-guide.md#testing) section. Although, some of the testing bits will be used later
+the [Testing](#testing) section. Although, some of the testing bits will be used later
 in this user guide.
 
 ### Endpoint Instances
@@ -212,7 +218,7 @@ some way: before evaluating an HTTP body they also check/match whether the reque
 chunked/non-chunked. This is mostly about what API Finagle provides for streaming: chunked requests
 may read via `request.reader`, non-chunked via `request.content`.
 
-Similar to the rest of predefined endpoints, these are come in pairs required/optional.
+Similar to the rest of predefined endpoints, these come in pairs required/optional.
 
 Non-chunked bodies:
 
@@ -226,7 +232,7 @@ bodies in a single step.
 
 - `body(Option)[A, ContentType <: String]` - required/optional, non-chunked (only matches
   non-chunked requests) body represented as `A` and decoding according to presented
-  `Decode.Aux[A, ContentType]` instance. See [decoding from JSON](user-guide.md#decoding-from-json)
+  `Decode.Aux[A, ContentType]` instance. See [decoding from JSON](#decoding-from-json)
   for more details.
 - `jsonBody(Option)[A]` - an alias for `body[A, Application.Json]`.
 - `textBody(Option)[A]` - an alias for `body[A, Text.Plain]`
@@ -507,7 +513,7 @@ val interval: Endpoint[Interval] = (
 There are two API entry point into decoding JSON payloads: `jsonBody[A]` and `jsonBodyOption[A]`.
 These require a `Decode.Json[A]` instance to be available in the scope whenever they called.
 
-Finch comes with support for a number of [JSON libraries](json.md). All these integration modules do
+Finch comes with support for a number of [JSON libraries](#json). All these integration modules do
 is make the library-specific JSON decoders available for use as a `io.finch.Decode.Json[A]`. To take
 Circe as an example, you only have to import `io.finch.circe._` and have implicit `io.circe.Decoder[A]`
 instances in scope:
@@ -555,6 +561,132 @@ Encoding to JSON is not different from encoding to `application/xml` or anything
 
 Even though Finch is abstracted over the concrete `Content-Type` it's still biased towards JSON.
 This is why the `toService` call defaults to JSON and UTF-8 considered the default charset.
+
+### JSON
+
+Finch uses type classes `io.finch.Encode` and `io.finch.Decode` to make its JSON support pluggable.
+Thus in most of the cases it's not necessary to make any code changes (except for import statements)
+while switching the underlying JSON library.
+
+Finch comes with a rich support of many modern JSON libraries. While it's totally possible to use
+Finch with runtime reflection based libraries such as [Jackson][jackson], it's highly recommended to
+use compile-time based solutions such as [Circe][circe] and [Argonaut][argonaut] instead. When
+starting out, Circe would be the best possible choice as a JSON library due to its great performance
+and a lack of boilerplate.
+
+Use the following instructions to enable support for a particular JSON library.
+
+#### Circe
+
+* Add the dependency to the `finch-circe` module.
+* Make sure for each domain type that there are implicit instances of `io.circe.Encoder[A]` and
+  `io.circe.Decoder[A]` in the scope or that Circe's generic auto derivation is used via
+  `import io.circe.generic.auto_`.
+
+```tut:silent
+import io.finch.circe._
+import io.circe.generic.auto._
+```
+
+It's also possible to import the Circe configuration which uses a pretty printer configured with
+`dropNullKeys = true`. Use the following imports instead:
+
+```tut:silent
+import io.finch.circe.dropNullKeys._
+import io.circe.generic.auto._
+```
+
+Unless it's absolutely necessary to customize Circe's output format (i.e., drop null keys), always
+prefer the [Jackson serializer][circe-jackson] for [better performance][circe-jackson-performance].
+The following two imports show how to make Circe use Jackson while serializing instead of the
+built-in pretty printer.
+
+```tut:silent
+import io.finch.circe.jacksonSerializer._
+import io.circe.generic.auto._
+```
+
+#### Argonaut
+
+* Add the dependency to the `finch-argonaut` module.
+* Make sure for each domain type there are instances of `argonaut.EncodeJson[A]` and
+  `argonaut.DecodeJson[A]` in the scope.
+
+```scala
+import argonaut._
+import argonaut.Argonaut._
+import io.finch.argonaut._
+
+implicit val e: EncodeJson[_] = ???
+implicit val d: DecodeJson[_] = ???
+```
+
+In addition to the very basic Argonaut pretty printer (available via `import io.finch.argonaut._`),
+there are three additional configurations available out of the box:
+
+* `import io.finch.argonaut.dropNullKeys._` - brings both decoder and encoder (uses the pretty
+  printer that drops null keys) in the scope
+* `import io.finch.argonaut.preserveOrder._` - brings both decoder and encoder (uses the pretty
+  printer that preserves fields order) in the scope
+* `import io.finch.argonaut.preserveOrderAndDropNullKeys._` - brings both decoder and encoder (uses
+  the pretty printer that preserves fields order as well as drops null keys) in the scope
+
+#### Jackson
+
+* Add the dependency to the `finch-jackson` module.
+* Import `import io.finch.jackson._`
+
+While finch-jackson seems like the easiest way to enable JSON support in Finch, it's probably the
+most dangerous one due to the level of involvement of the runtime based reflection.
+
+#### Json4s
+
+* Add the dependency to the `finch-json4s` module.
+* Make sure there is an implicit instance of `Formats` in the scope.
+
+```scala
+import io.finch.json4s._
+import org.json4s.DefaultFormats
+
+implicit val formats: Formats = DefaultFormats ++ JodaTimeSerializers.all
+```
+
+#### PlayJson
+
+* Add the dependency to the `finch-playjson` module.
+* For any type you want to serialize or deserialize you are required to create the appropriate
+  Play JSON `Reads` and `Writes`.
+
+```tut:silent
+import io.finch.playjson._
+import play.api.libs.json._
+
+case class Foo(name: String,age: Int)
+
+object Foo {
+  implicit val fooReads: Reads[Foo] = Json.reads[Foo]
+  implicit val fooWrites: Writes[Foo] = Json.writes[Foo]
+}
+```
+
+#### Spray-Json
+
+* Add the dependency to the `finch-sprayjson` module.
+* Create an implicit format convertor value for any type you defined.
+
+```scala
+import io.finch.sprayjson._
+import spray.json._
+import Defaultjsonprotocol._
+
+case class Foo(name: String, age: Int)
+
+object Foo {
+  //Note: `2` means Foo has two members;
+  //       No need for apply if there is no companion object
+  implicit val fooformat = jsonFormat2(Foo.apply)
+}
+```
 
 ### Validation
 
@@ -619,7 +751,7 @@ Finch itself throws three kinds of errors represented as either `io.finch.Error`
 
 #### Error Accumulation
 
-[Product endpoints](user-guide.md#product-endpoints) play critical role in error accumulation in
+[Product endpoints](#product-endpoints) play critical role in error accumulation in
 Finch. Essentially, a product of two endpoints accumulates Finch's own errors (i.e., `io.finch.Error`
 indicating a parse/validation failure or a missing entity) into `io.finch.Error` and will fail-fast
 with the first non-Finch error (just ordinary `Exception`) observed.

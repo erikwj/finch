@@ -1,8 +1,5 @@
 options:
 
-  - title: Home
-    url: index.html
-
   - title: User Guide
     url: user-guide.html
 
