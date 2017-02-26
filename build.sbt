@@ -13,6 +13,7 @@ lazy val finagleVersion = "6.42.0"
 lazy val utilVersion = "6.41.0"
 lazy val twitterServerVersion = "1.27.0"
 lazy val finagleOAuth2Version = "0.4.0"
+lazy val finagleHttpAuthVersion = "0.1.0"
 lazy val circeVersion = "0.7.0"
 lazy val circeJacksonVersion = "0.7.0"
 lazy val catbirdVersion = "0.12.0"
@@ -112,7 +113,7 @@ lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
   micrositeDescription := "Scala combinator library for building Finagle HTTP services",
   micrositeAuthor := "Vladimir Kostyukov",
   micrositeHighlightTheme := "atom-one-light",
-  micrositeHomepage := "https://erikwj.github.io/finch/",
+  micrositeHomepage := "https://finch.github.io/finagle/finch/",
   micrositeBaseUrl := "finch",
   micrositeDocumentationUrl := "api",
   micrositeGithubOwner := "finagle",
@@ -129,7 +130,7 @@ lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
     "gray-lighter" -> "#F4F3F4",
     "white-color" -> "#FFFFFF"),
   addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
-//  ghpagesNoJekyll := false,
+  ghpagesNoJekyll := false,
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "-groups",
     "-implicits",
@@ -146,20 +147,12 @@ lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
   includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
   ,siteSubdirName in ScalaUnidoc := "docs"
 
-//lazy val docSettings =  Seq(
-//  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc),
-//  git.remoteRepo := s"git@github.com:finagle/finch.git",
-//  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmarks, jsonTest)
-
 )
 
 
 lazy val finch = project.in(file("."))
   .settings(moduleName := "finch")
-//  .enablePlugins(ScalaUnidocPlugin)
-//  .enablePlugins(GhpagesPlugin)
   .settings(allSettings)
-//  .settings(docSettings)
   .settings(noPublish)
   .settings(
     initialCommands in console :=
@@ -287,6 +280,7 @@ lazy val docs = project
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-generic" % circeVersion,
       "com.github.finagle" %% "finagle-oauth2" % finagleOAuth2Version,
+      "com.github.finagle" %% "finagle-http-auth" % finagleHttpAuthVersion,
       "com.twitter" %% "twitter-server" % twitterServerVersion,
       "com.twitter" %% "util-eval" % utilVersion,
       "joda-time" % "joda-time" % "2.9.6",

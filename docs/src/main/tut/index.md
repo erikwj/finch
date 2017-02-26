@@ -90,7 +90,7 @@ object Main extends App {
 
 [finagle]: http://twitter.github.io/finagle/
 [circe]: https://github.com/travisbrown/circe
-[matsuri17]: https://kostyukov.net/slides/finch-tokyo/?full#Cover
+[matsuri17]: http://kostyukov.net/slides/finch-tokyo/?full#Cover
 [ylj16]: https://www.youtube.com/watch?v=xkZOyY9PG88
 [ucon16]: https://skillsmatter.com/skillscasts/9335-high-flying-free-and-easy-functional-microservices-with-finch
 [scalax]: https://skillsmatter.com/skillscasts/6876-finch-your-rest-api-as-a-monad

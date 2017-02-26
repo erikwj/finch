@@ -241,15 +241,16 @@ useful server-side features that might be useful for most of the use cases.
  might think of overriding a [concurrency limit][finagle-concurrency] (a maximum number of
  concurrent requests allowed) on it (disabled by default).
 
- ```tut:silent
- 
+
+```tut:silent
  import com.twitter.finagle.Http
  import com.twitter.finagle.http.{Request, Response}
  
  object Main extends TwitterServer {
- 
-   val service: Service[Request, Response] = ???
- 
+   
+   val ping: Endpoint[String] = get("ping") { Ok("Pong") }
+   val service: Service[Request, Response] = ping.toServiceAs[Text.Plain]
+
    def main(): Unit = {
     val server = Http.server
       .withAdmissionControl
@@ -263,8 +264,7 @@ useful server-side features that might be useful for most of the use cases.
      Await.ready(adminHttpServer)
    }
  }
- 
- ```
+```
 
 ### Finagle Filters vs. Finch Endpoints
 
