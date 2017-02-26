@@ -115,13 +115,14 @@ It's possible that Finch might be missing some of handy endpoints out of the box
 it's evolved separately from Finagle. To overcome this and provide an extension point, there is a
 special endpoint instance, called `root` that returns a raw Finagle `Request`.
 
-```scala
+```tut:silent
 import io.finch._
-import io.finch._
+import io.finch.Endpoint._
+import java.net.InetAddress
 
-val remoteAddr = root.map(_.remoteAddress)
+val remoteAddr:Endpoint[InetAddress] = root.map(_.remoteAddress)
 
-remoteAddr(Input.get("/")).value
+val result: Result[InetAddress] = remoteAddr(Input.get("/"))
 ```
 
 #### Match All
@@ -133,14 +134,14 @@ A `*` endpoint always matches the entire path (all the segments).
 There is an implicit conversion from `String`, `Boolean` and `Int` to a matching endpoint that
 matches the current path segment of a given request against a converted value.
 
-```scala
+```tut:silent
 import io.finch._
 
 val e: Endpoint0 = "foo"
 
-e(Input.get("/foo")).isDefined
+e(Input.get("/foo")).isMatched
 
-e(Input.get("/bar")).isDefined
+e(Input.get("/bar")).isMatched
 ```
 
 #### Extract Path
@@ -279,12 +280,12 @@ A product endpoint returns a product type represented as an `HList`. For example
 `Endpoint[Foo :: Bar :: HNil]` returns two values of types `Foo` and `Bar` wrapped with `HList`. To
 build a product endpoint, use the `::` combinator.
 
-```scala
+```tut:silent
 import io.finch._
 import shapeless._
 
-val i: Endpoint[Int] = ???
-val s: Endpoint[String] = ???
+val i: Endpoint[Int] = int
+val s: Endpoint[String] = string
 val both: Endpoint[Int :: String :: HNil] = i :: s
 ```
 
@@ -298,12 +299,12 @@ A coproduct `Endpoint[A :+: B :+: CNil]` represents an endpoint that returns a v
 function defined in `Option` and `Try`: if the first endpoint fails to match the input, it fails
 through to the second one.
 
-```scala
+```tut:silent
 import io.finch._
 import shapeless._
 
-val i: Endpoint[Int] = ???
-val s: Endpoint[String] = ???
+val i: Endpoint[Int] = int
+val s: Endpoint[String] = string
 val either: Endpoint[Int :+: String :+: CNil] = i :+: s
 ```
 
@@ -322,23 +323,27 @@ wrapping the right hand side `Output[B]` into a `Future`.
 In the following example, an `Endpoint[Int :: Int :: HNil]` is mapped to a function
 `(Int, Int) => Output[Int]`.
 
-```scala
+```tut:silent
 import io.finch._
-import io.shapeless._
+import shapeless._
 
-val both: Endpoint[Int :: Int :: HNil] = ???
+val i: Endpoint[Int] = int
+val both: Endpoint[Int :: Int :: HNil] = i :: i
+
 val sum: Endpoint[Int] = both { (a: Int, b: Int) => Ok(a + b) }
 ```
 
 There is a special case when `Endpoint[L <: HList]` is converted into an endpoint of case class. For
 this purpose, the `Endpoint.as[A]` method might be used.
 
-```scala
+```tut:silent
 import io.finch._
 import shapeless._
 
 case class Foo(i: Int, s: String)
-val is: Endpoint[Int :: String :: HNil] = ???
+val i: Endpoint[Int] = int
+val s: Endpoint[String] = string
+val is: Endpoint[Int :: String :: HNil] = i :: s
 
 val foo: Endpoint[Foo] = is.as[Foo]
 ```
@@ -387,9 +392,12 @@ order to convert an `Endpoint` into a Finagle service, there should be an implic
 `Encode[Exception]` for a given content-type available in the scope. For example, it might be defined
 in terms of Circe's `Encoder`:
 
-```scala
+```tut:silent
+import io.finch._
+import io.circe._
+
 implicit val encodeException: Encoder[Exception] = Encoder.instance(e =>
-  Json.obj("message" -> Json.string(e.getMessage)))
+  Json.obj("message" -> Json.fromString(e.getMessage)))
 ```
 
 NOTE: This instance is already available whenever `io.finch.circe._` import is present (simlar for
@@ -485,8 +493,10 @@ Writing a new decoder for a type not supported out of the box is very easy, too.
 example shows a decoder for a Joda `DateTime` from a `Long` representing the number of milliseconds
 since the epoch:
 
-```scala
+```tut:silent
 import io.finch._
+import com.twitter.util.Try
+import org.joda.time.DateTime
 
 implicit val dateTimeDecoder: DecodeEntity[DateTime] =
   DecodeEntity.instance(s => Try(new DateTime(s.toLong)))
@@ -798,10 +808,10 @@ content-type. For example, here is an instance for HTML.
 
 ```tut:silent
 import io.finch._
-import io.finch.internal.BufText
+import com.twitter.io.Buf
 
 implicit val e: Encode.Aux[Exception, Text.Html] = Encode.instance((e, cs) =>
-  BufText(s"<h1>Bad thing happened: ${e.getMessage}<h1>", cs)
+  Buf.Utf8(s"<h1>Bad thing happened: ${e.getMessage}<h1>")
 )
 ```
 
@@ -825,11 +835,9 @@ val foo: Input = Input.get("/foo", "a" -> "2", "b" -> "3")
 Similarly a payload (`application/x-www-form-urlencoded` in this case) with headers may be added
 to an input:
 
-```scala
+```tut:silent
 import io.finch._
-val bar: Input = Input.post("/bar")
-  .withForm("a" -> "1", "b" -> "2")
-  .withHeaders("X-Header" -> "Y")
+val bar: Input = Input.post("/bar").withForm("a" -> "1", "b" -> "2").withHeaders("X-Header" -> "Y")
 ```
 
 Additionally, there is JSON-specific support in the `Input` API through `withBody`.

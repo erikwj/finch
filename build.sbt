@@ -1,4 +1,4 @@
-import sbtunidoc.Plugin.UnidocKeys._
+import UnidocKeys._
 import microsites.ExtraMdFileConfig
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 
@@ -107,7 +107,7 @@ lazy val noPublish = Seq(
 
 lazy val allSettings = baseSettings ++ buildSettings ++ publishSettings
 
-lazy val docSettings = allSettings ++ ghpages.settings ++ unidocSettings ++ Seq(
+lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
   micrositeName := "finch",
   micrositeDescription := "Scala combinator library for building Finagle HTTP services",
   micrositeAuthor := "Vladimir Kostyukov",
@@ -121,15 +121,15 @@ lazy val docSettings = allSettings ++ ghpages.settings ++ unidocSettings ++ Seq(
   micrositeName := "Finch",
   micrositePalette := Map(
     "brand-primary" -> "#3b3c3b",
-    "brand-secondary" -> "#3b3c3b",
-    "brand-tertiary" -> "#3b3c3b",
-    "gray-dark" -> "#49494B",
-    "gray" -> "#7B7B7E",
-    "gray-light" -> "#E5E5E6",
+    "brand-secondary" -> "#4c4d4c",
+    "brand-tertiary" -> "#5d5e5d",
+    "gray-dark" -> "#48494B",
+    "gray" -> "#7D7E7D",
+    "gray-light" -> "#E5E6E5",
     "gray-lighter" -> "#F4F3F4",
     "white-color" -> "#FFFFFF"),
   addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
-  ghpagesNoJekyll := false,
+//  ghpagesNoJekyll := false,
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "-groups",
     "-implicits",
@@ -142,10 +142,9 @@ lazy val docSettings = allSettings ++ ghpages.settings ++ unidocSettings ++ Seq(
     _.filterNot(Set("-Yno-predef"))
   },
   git.remoteRepo := "git@github.com:erikwj/erikwj.git",
-  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject,
+  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmarks, jsonTest),
   includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
-
-//    siteSubdirName in ScalaUnidoc := "docs"
+  ,siteSubdirName in ScalaUnidoc := "docs"
 
 //lazy val docSettings =  Seq(
 //  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc),
@@ -157,10 +156,10 @@ lazy val docSettings = allSettings ++ ghpages.settings ++ unidocSettings ++ Seq(
 
 lazy val finch = project.in(file("."))
   .settings(moduleName := "finch")
-  .enablePlugins(GhpagesPlugin)
-  .enablePlugins(ScalaUnidocPlugin)
+//  .enablePlugins(ScalaUnidocPlugin)
+//  .enablePlugins(GhpagesPlugin)
   .settings(allSettings)
-  .settings(docSettings)
+//  .settings(docSettings)
   .settings(noPublish)
   .settings(
     initialCommands in console :=

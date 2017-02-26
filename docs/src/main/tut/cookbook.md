@@ -8,7 +8,6 @@ position: 2
 
 This is a collection of short recipes of "How to X in Finch".
 
-*
 * [Fixing the `.toService` compile error](#fixing-the-toservice-compile-error)
 * [Serving multiple content types](#serving-multiple-content-types)
 * [Serving static content](#serving-static-content)
@@ -81,7 +80,7 @@ Putting it all together and assuming that most of the Finch applications serve J
 reasonable to pass  `Application.Json` to the `toServiceAs` call and downgrade non-JSON endpoints to
 `Endpoint[Response]`.
 
-```scala
+```tut:silent
 import com.twitter.finagle.Http
 import com.twitter.finagle.http.Response
 import com.twitter.io.Buf
@@ -92,8 +91,8 @@ import io.finch.circe._
 
 case class Message(message: String)
 
-implicit val fooDecoder: Decoder[Message] = deriveDecoder
-implicit val fooEncoder: Encoder[Message] = deriveEncoder
+implicit val fooDecoder: Decoder[Message] = deriveDecoder[Message]
+implicit val fooEncoder: Encoder[Message] = deriveEncoder[Message]
 
 val json: Endpoint[Message] = get("json") {
   Ok(Message("Hello, World!"))
@@ -269,7 +268,9 @@ behavior) wasn't touched at all.
 In the following example, we define a new endpoint `foo` that reads an instance of the case class
 `Foo` from the request during the _evaluation_ stage. So it won't affect matching.
 
-```scala
+```tut:silent
+import io.finch._
+
 case class Foo(i: Int, s: String)
 
 val foo: Endpoint[Foo] = (param("i").as[Int] :: param("s")).as[Foo]
@@ -448,7 +449,7 @@ the `time` endpoint.
 
 NOTE: SSE requires `Cache-Control` to be disabled.
 
-```scala
+```tut:silent
 import cats.Show
 import com.twitter.concurrent.AsyncStream
 import com.twitter.conversions.time._
@@ -475,7 +476,7 @@ val time: Endpoint[AsyncStream[ServerSentEvent[Date]]] = get("time") {
     .withHeader("Cache-Control" -> "no-cache")
 }
 
-Await.ready(Http.server.serve(":8081", time.toServiceAs[Text.EventStream]))
+//Await.ready(Http.server.serve(":8081", time.toServiceAs[Text.EventStream]))
 ```
 
 ### JSONP
@@ -485,7 +486,7 @@ filter `JsonpFilter` that can be applied to an HTTP service returning JSON to "u
 
 Here is a small example on how to wire this filter with Finch's endpoint.
 
-```scala
+```tut:silent
 import com.twitter.finagle.Http
 import com.twitter.finagle.http.filter.JsonpFilter
 import io.finch._

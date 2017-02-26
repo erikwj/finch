@@ -251,7 +251,8 @@ useful server-side features that might be useful for most of the use cases.
    val service: Service[Request, Response] = ???
  
    def main(): Unit = {
-    val server = Http.server.withAdmissionControl
+    val server = Http.server
+      .withAdmissionControl
       .concurrencyLimit(
         maxConcurrentRequests = 10, 
         maxWaiters = 10)
