@@ -575,6 +575,10 @@ class MockDataHandler extends DataHandler[Int] {
 val dataHandler: DataHandler[Int] = new MockDataHandler()
 val auth: Endpoint[AuthInfo[Int]] = authorize(dataHandler)
 val e: Endpoint[Int] = get("user" :: auth) { ai: AuthInfo[Int] => Ok(ai.user) }
+
+//Issue Access Token
+val token: Endpoint[GrantHandlerResult] = issueAccessToken(dataHandler)
+
 ```
 
 *Issue Access Token*
