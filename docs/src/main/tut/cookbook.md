@@ -601,11 +601,19 @@ import com.twitter.finagle.Service
 import com.twitter.util.{Await, Future}
 
 case class User(id: Int)
+<<<<<<< HEAD
 
 val ba = BasicAuth.serverFromCredentials("admin", "12345")
 
 val port = 8081
 
+=======
+
+val ba = BasicAuth.serverFromCredentials("admin", "12345")
+
+val port = 8081
+
+>>>>>>> 676b46a8c7d11ceff1036d06019ec3abe711b5e8
 val getCurrentUser: Endpoint[User] = get("users" :: int) { id: Int =>
   println(s"Getting user with id: $id")
   Ok(User(id)) // echo it back
