@@ -581,14 +581,6 @@ val token: Endpoint[GrantHandlerResult] = issueAccessToken(dataHandler)
 
 ```
 
-*Issue Access Token*
-```scala
-import com.twitter.finagle.oauth2._
-import io.finch.oauth2._
-
-val token: Endpoint[GrantHandlerResult] = issueAccessToken(dataHandler)
-```
-
 Note that both `token` and `authorize` may throw `com.twitter.finagle.oauth2.OAuthError`, which is
 already _handled_ by a returned endpoint but needs to be serialized. This means you might want to
 include its serialization logic into an instance of `Encode[Exception]`.
@@ -600,17 +592,39 @@ project that provides Finagle filters implementing authentication for clients an
 this would look like a `BasicAuth.Server` filter applied to `Service` returned from the `.toService`
 call. See finagle-http-auth's README for more usage details.
 
-```scala
+```tut:silent
 import io.finch._
-import io.finch._
-import io.finch.oauth2._
-import com.twitter.finagle.oauth2._
+import io.circe.generic.auto._
+import com.twitter.finagle.Http
+import com.twitter.finagle.http.{BasicAuth, Request, Response}
+import com.twitter.finagle.Service
+import com.twitter.util.{Await, Future}
 
+case class User(id: Int)
 
-val basicAuth = BasicAuth("realm") { (user, password) =>
-  Future { user == "user" && password == "password" }
+val ba = BasicAuth.serverFromCredentials("admin", "12345")
+
+val port = 8081
+
+val getCurrentUser: Endpoint[User] = get("users" :: int) { id: Int =>
+  println(s"Getting user with id: $id")
+  Ok(User(id)) // echo it back
 }
-val e: Endpoint[String] = basicAuth(Endpoint.liftOutput(Ok("secret place")))
+
+val userService:Service[Request,Response] = getCurrentUser.toService
+val secureService:Service[Request,Response] = ba.andThen(userService)
+val good = BasicAuth.client("admin", "12345")
+val bad = BasicAuth.client("root", "deadbeef")
+val client = Http.client.newService(s"localhost:$port")
+val input = Input.get("/users/10")
+```
+
+```tut
+val server = Http.server.serve(s":$port", secureService )
+Await.result(good.andThen(client)(input.request))
+Await.result(bad.andThen(client)(input.request))
+server.close()
+
 ```
 
 

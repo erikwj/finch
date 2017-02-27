@@ -133,7 +133,7 @@ A `*` endpoint always matches the entire path (all the segments).
 There is an implicit conversion from `String`, `Boolean` and `Int` to a matching endpoint that
 matches the current path segment of a given request against a converted value.
 
-```scala
+```tut
 scala> import io.finch._
 import io.finch._
 

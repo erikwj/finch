@@ -175,14 +175,14 @@ boolean("flag")
 For every HTTP verb, there is a function `Endpoint[A] => Endpoint[A]` that takes a given endpoint of
 an arbitrary type and enriches it with an additional check/match of the HTTP method/verb.
 
-```tut:silent
+```tut
 import io.finch._, com.twitter.finagle.http.{Request, Method}
 
-val e = get(/)
+val e: Endpoint0 = "foo"
 
-e(Input.post("/")).isMatched
+e(Input.get("/foo")).isMatched
 
-e(Input.get("/")).isMatched
+e(Input.get("/bar")).isMatched
 ```
 
 #### Params
